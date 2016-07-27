@@ -20,6 +20,8 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
         "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
         "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
     \
+      /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
+    echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf && \
     rm "/etc/apk/keys/sgerrand.rsa.pub" && \
     /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true && \
     echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
@@ -28,9 +30,10 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
     \
     rm "/root/.wget-hsts" && \
     apk del .build-dependencies && \
-    rm \
+    rm -rf \
         "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
         "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" \
+        /var/cache/apk/*
 
 ENV LANG=C.UTF-8
